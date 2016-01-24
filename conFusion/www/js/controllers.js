@@ -190,7 +190,6 @@ angular.module('conFusion.controllers', [])
 // implement the IndexController and About Controller here
 
 .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', 'baseURL', function ($scope, menuFactory, corporateFactory, baseURL) {
-    console.log("HAHAHAHAHAH");
     $scope.baseURL = baseURL;
     $scope.leader = corporateFactory.get({
         id: 3
@@ -214,8 +213,8 @@ angular.module('conFusion.controllers', [])
     });
       }])
 
-.controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
-
+.controller('AboutController', ['$scope', 'corporateFactory', 'baseURL', function ($scope, corporateFactory, baseURL) {
+    $scope.baseURL = baseURL;
     $scope.leaders = corporateFactory.query();
     console.log($scope.leaders);
 
