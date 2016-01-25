@@ -195,6 +195,7 @@ angular.module('conFusion.controllers', [])
     // Add a selected items to favorites
     $scope.addFavorite = function (index) {
         console.log("index is " + index);
+        $scope.closePopover();
         favoriteFactory.addToFavorites(index);
         $ionicListDelegate.closeOptionButtons();
     };
@@ -225,6 +226,7 @@ angular.module('conFusion.controllers', [])
     });
     $scope.openModal = function () {
         $scope.modal.show();
+        $scope.closePopover();
     };
     $scope.closeModal = function () {
         $scope.modal.hide();
@@ -234,6 +236,32 @@ angular.module('conFusion.controllers', [])
         $scope.modal.remove();
     });
 
+    $scope.comment = {
+        rating: 5,
+        comment: "",
+        author: "",
+        date: ""
+    };
+    $scope.submitComment = function () {
+
+        $scope.comment.date = new Date().toISOString();
+        console.log($scope.comment);
+
+        $scope.dish.comments.push($scope.comment);
+        menuFactory.getDishes().update({
+            id: $scope.dish.id
+        }, $scope.dish);
+        console.log("Good!");
+
+        $scope.comment = {
+            rating: 5,
+            comment: "",
+            author: "",
+            date: ""
+        };
+
+        $scope.closeModal();
+    }
 
 
         }])
