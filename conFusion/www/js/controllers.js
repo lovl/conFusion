@@ -171,10 +171,11 @@ angular.module('conFusion.controllers', [])
     };
         }])
 
-.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'baseURL', function ($scope, $stateParams, menuFactory, baseURL) {
+.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', 'favoriteFactory', '$ionicListDelegate', 'baseURL', '$ionicPopover', '$ionicModal', '$timeout', function ($scope, $stateParams, menuFactory, favoriteFactory, $ionicListDelegate, baseURL, $ionicPopover, $ionicModal, $timeout) {
 
     $scope.baseURL = baseURL;
     $scope.dish = {};
+    $scope.comment = {};
     $scope.showDish = false;
     $scope.message = "Loading ...";
 
@@ -190,6 +191,49 @@ angular.module('conFusion.controllers', [])
                 $scope.message = "Error: " + response.status + " " + response.statusText;
             }
         );
+
+    // Add a selected items to favorites
+    $scope.addFavorite = function (index) {
+        console.log("index is " + index);
+        favoriteFactory.addToFavorites(index);
+        $ionicListDelegate.closeOptionButtons();
+    };
+
+    // .fromTemplateUrl() method
+    $ionicPopover.fromTemplateUrl('templates/dish-detail-popover.html', {
+        scope: $scope
+    }).then(function (popover) {
+        $scope.popover = popover;
+    });
+
+
+    $scope.openPopover = function ($event) {
+        $scope.popover.show($event);
+    };
+    $scope.closePopover = function () {
+        $scope.popover.hide();
+    };
+    //Cleanup the popover when we're done with it!
+    $scope.$on('$destroy', function () {
+        $scope.popover.remove();
+    });
+    $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
+        scope: $scope,
+        animation: 'slide-in-up'
+    }).then(function (modal) {
+        $scope.modal = modal;
+    });
+    $scope.openModal = function () {
+        $scope.modal.show();
+    };
+    $scope.closeModal = function () {
+        $scope.modal.hide();
+    };
+    //Cleanup the modal when we're done with it!
+    $scope.$on('$destroy', function () {
+        $scope.modal.remove();
+    });
+
 
 
         }])
@@ -318,6 +362,8 @@ angular.module('conFusion.controllers', [])
                     out.push(dishes[j]);
             }
         }
+        console.log("fav added!");
+
         return out;
 
     }
