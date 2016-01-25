@@ -25,7 +25,7 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
 .config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
 
-        .state('app', {
+    .state('app', {
         url: '/app',
         abstract: true,
         templateUrl: 'templates/sidebar.html',
@@ -80,7 +80,18 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers', 'conFusion.servic
                 controller: 'DishDetailController'
             }
         }
+    })
+
+    .state('app.favorites', {
+        url: '/favorites',
+        views: {
+            'mainContent': {
+                templateUrl: 'templates/favorites.html',
+                controller: 'FavoritesController'
+            }
+        }
     });
+
     // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/app/home');
 });
