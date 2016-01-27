@@ -14,24 +14,18 @@ angular.module('conFusion.services', ['ngResource'])
 
 .factory('promotionFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
     return $resource(baseURL + "promotions/:id");
-
 }])
 
 .factory('corporateFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
-
-
     return $resource(baseURL + "leadership/:id");
-
-        }])
+}])
 
 .factory('feedbackFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
-
-
     return $resource(baseURL + "feedback/:id");
-
-        }])
+}])
 
 .factory('favoriteFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
+    
     var favFac = {};
     var favorites = [];
 
@@ -59,7 +53,7 @@ angular.module('conFusion.services', ['ngResource'])
 
     return favFac;
 
-        }])
+}])
 
 .factory('$localStorage', ['$window', function ($window) {
     return {
@@ -76,7 +70,4 @@ angular.module('conFusion.services', ['ngResource'])
             return JSON.parse($window.localStorage[key] || defaultValue);
         }
     }
-}])
-
-
-;
+}]);
