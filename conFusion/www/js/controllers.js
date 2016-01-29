@@ -2,9 +2,38 @@
 
 angular.module('conFusion.controllers', [])
 
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $localStorage, $ionicPlatform, $cordovaCamera) {
+
+    $ionicPlatform.ready(function () {
+        var options = {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: Camera.PictureSourceType.CAMERA,
+            allowEdit: true,
+            encodingType: Camera.EncodingType.JPEG,
+            targetWidth: 100,
+            targetHeight: 100,
+            popoverOptions: CameraPopoverOptions,
+            saveToPhotoAlbum: false
+        };
+        $scope.takePicture = function () {
+            $cordovaCamera.getPicture(options).then(function (imageData) {
+                $scope.registration.imgSrc = "data:image/jpeg;base64," + imageData;
+            }, function (err) {
+                console.log(err);
+            });
+
+            $scope.registerform.show();
+
+        };
+    });
+
+
+
+
 
     // Form data for the login modal
+    $scope.registration = {};
     $scope.loginData = $localStorage.get('userinfo', {});
 
     // Create the login modal that we will use later
@@ -64,10 +93,40 @@ angular.module('conFusion.controllers', [])
         }, 1000);
     };
 
+    // Create the registration modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/register.html', {
+        scope: $scope
+    }).then(function (modal) {
+        $scope.registerform = modal;
+    });
+
+    // Triggered in the registration modal to close it
+    $scope.closeRegister = function () {
+        $scope.registerform.hide();
+    };
+
+    // Open the registration modal
+    $scope.register = function () {
+        $scope.registerform.show();
+    };
+
+    // Perform the registration action when the user submits the registration form
+    $scope.doRegister = function () {
+        console.log('Doing reservation', $scope.reservation);
+
+        // Simulate a registration delay. Remove this and replace with your registration
+        // code if using a registration system
+        $timeout(function () {
+            $scope.closeRegister();
+        }, 1000);
+    };
+
+
+
 })
 
 .controller('MenuController', ['$scope', 'dishes', 'favoriteFactory', 'baseURL', '$ionicListDelegate', '$ionicPlatform', '$cordovaLocalNotification', '$cordovaToast', function ($scope, dishes, favoriteFactory, baseURL, $ionicListDelegate, $ionicPlatform, $cordovaLocalNotification, $cordovaToast) {
-    
+
     $scope.baseURL = baseURL;
     $scope.tab = 1;
     $scope.filtText = '';
@@ -100,27 +159,27 @@ angular.module('conFusion.controllers', [])
         favoriteFactory.addToFavorites(index);
         $ionicListDelegate.closeOptionButtons();
         $ionicPlatform.ready(function () {
-                $cordovaLocalNotification.schedule({
-                    id: 1,
-                    title: "Added Favorite",
-                    text: $scope.dishes[index].name
-                }).then(function () {
-                    console.log('Added Favorite '+$scope.dishes[index].name);
+            $cordovaLocalNotification.schedule({
+                id: 1,
+                title: "Added Favorite",
+                text: $scope.dishes[index].name
+            }).then(function () {
+                    console.log('Added Favorite ' + $scope.dishes[index].name);
                 },
                 function () {
                     console.log('Failed to add Favorite ');
                 });
 
-                $cordovaToast
-                  .show('Added Favorite '+$scope.dishes[index].name, 'long', 'center')
-                  .then(function (success) {
-                      // success
-                  }, function (error) {
-                      // error
-                  });
+            $cordovaToast
+                .show('Added Favorite ' + $scope.dishes[index].name, 'long', 'center')
+                .then(function (success) {
+                    // success
+                }, function (error) {
+                    // error
+                });
         });
-        
-        
+
+
     }
 
 }])
@@ -163,32 +222,32 @@ angular.module('conFusion.controllers', [])
     $scope.openPopover = function ($event) {
         $scope.popover.show($event);
     };
-    
+
     $scope.closePopover = function () {
         $scope.popover.hide();
     };
-    
+
     //Cleanup the popover when we're done with it!
     $scope.$on('$destroy', function () {
         $scope.popover.remove();
     });
-    
+
     $ionicModal.fromTemplateUrl('templates/dish-comment.html', {
         scope: $scope,
         animation: 'slide-in-up'
     }).then(function (modal) {
         $scope.modal = modal;
     });
-    
+
     $scope.openModal = function () {
         $scope.modal.show();
         $scope.closePopover();
     };
-    
+
     $scope.closeModal = function () {
         $scope.modal.hide();
     };
-    
+
     //Cleanup the modal when we're done with it!
     $scope.$on('$destroy', function () {
         $scope.modal.remove();
@@ -200,7 +259,7 @@ angular.module('conFusion.controllers', [])
         author: "",
         date: ""
     };
-    
+
     $scope.submitComment = function () {
 
         $scope.comment.date = new Date().toISOString();
@@ -262,10 +321,10 @@ angular.module('conFusion.controllers', [])
 }])
 
 .controller('AboutController', ['$scope', 'leaders', 'corporateFactory', 'baseURL', function ($scope, leaders, corporateFactory, baseURL) {
-    
+
     $scope.baseURL = baseURL;
     $scope.leaders = leaders;
-    
+
 }])
 
 .filter('favoriteFilter', function () {
